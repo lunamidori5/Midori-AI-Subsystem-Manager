@@ -90,7 +90,7 @@ else:
 
 if os.path.exists("running_subsystem_manager_other_os.py"):
     print("Other OS: Runner seen, updating it")
-    os.system("curl -sSL https://raw.githubusercontent.com/lunamidori5/Midori-AI/master/other_files/midori_ai_manager/subsystem_python_runner.py > subsystem_python_runner.py")
+    os.system("curl -sSL https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/midori_ai_manager/subsystem_python_runner.py > subsystem_python_runner.py")
 
 
 client_openai = help_add_on.setup_carly(temp_list)
