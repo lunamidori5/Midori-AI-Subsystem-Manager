@@ -14,11 +14,11 @@ RUN apt-get install -y unzip zip tar curl tree wget git python3.10 python3-pip p
 RUN curl -fsSL https://get.docker.com -o get-docker.sh && sh ./get-docker.sh
 
 RUN bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-RUN curl -sSL https://raw.githubusercontent.com/lunamidori5/Midori-AI/master/other_files/subsystem_docker_stuff/ohmybash.sh > ohmybash.sh
+RUN curl -sSL https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/subsystem_docker_stuff/ohmybash.sh > ohmybash.sh
 RUN cp ohmybash.sh /root/.bashrc
 
 RUN apt-get clean && apt-get autoclean
 
-RUN curl -sSL https://raw.githubusercontent.com/lunamidori5/Midori-AI/master/other_files/midori_ai_manager/subsystem_python_runner.py > subsystem_python_runner.py
+RUN curl -sSL https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/midori_ai_manager/subsystem_python_runner.py > subsystem_python_runner.py
 
 CMD ["sleep", "infinity"]

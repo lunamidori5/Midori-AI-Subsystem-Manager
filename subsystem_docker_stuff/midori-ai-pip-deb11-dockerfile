@@ -12,7 +12,7 @@ RUN apt-get install -y python3.10 python3-pip
 
 RUN apt-get clean && apt-get autoclean
 
-RUN wget --no-check-certificate --no-cache --no-cookies https://raw.githubusercontent.com/lunamidori5/Midori-AI/master/other_files/midori_ai_manager/python_pip_installer.py
+RUN wget --no-check-certificate --no-cache --no-cookies https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/midori_ai_manager/python_pip_installer.py
 
 RUN python3 python_pip_installer.py
 
