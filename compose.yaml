@@ -1,21 +1,21 @@
 services:
   intelf16:
-    image: "lunamidori5/midori_ai_subsystem_localai_intelf16_gpu"
+    image: "lunamidori5/midori_ai_subsystem_localai_intelf16_gpu:master"
     build:
       context: .
       dockerfile: ./subsystem_docker_stuff/localai/localai-subsystem-dockerfile-intelf16-gpu
   intelf32:
-    image: "lunamidori5/midori_ai_subsystem_localai_intelf32_gpu"
+    image: "lunamidori5/midori_ai_subsystem_localai_intelf32_gpu:master"
     build:
       context: .
       dockerfile: ./subsystem_docker_stuff/localai/localai-subsystem-dockerfile-intelf32-gpu
   hipblas:
-    image: "lunamidori5/midori_ai_subsystem_localai_hipblas_gpu"
+    image: "lunamidori5/midori_ai_subsystem_localai_hipblas_gpu:master"
     build:
       context: .
       dockerfile: ./subsystem_docker_stuff/localai/localai-subsystem-dockerfile-hipblas-gpu
   nvidia:
-    image: "lunamidori5/midori_ai_subsystem_localai_nvidia_gpu"
+    image: "lunamidori5/midori_ai_subsystem_localai_nvidia_gpu:master"
     build:
       context: .
       dockerfile: ./subsystem_docker_stuff/localai/localai-subsystem-dockerfile-nvidia-gpu
