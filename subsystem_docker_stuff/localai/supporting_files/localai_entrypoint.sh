@@ -230,4 +230,4 @@ echo "===> Starting LocalAI[$PROFILE] with the following models: $MODELS"
 
 echo "$@"
 
-exec /build/entrypoint.sh "$@"
+/build/local-ai "$@"
