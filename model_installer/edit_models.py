@@ -220,10 +220,13 @@ class subsystem_backend_manager:
 
         s.log("Running commands inside of the Midori AI Subsystem!")
         for item_docker in docker_commands:
-            s.log(f"Running {item_docker}")
-            void, stream = container.exec_run(item_docker, stream=True)
-            for data in stream:
-                s.log(data.decode())
+            try:
+                s.log(f"Running {item_docker}")
+                void, stream = container.exec_run(item_docker, stream=True)
+                for data in stream:
+                    s.log(data.decode())
+            except Exception as e:
+                s.log(f"Error: {e}")
 
         input("Please press enter to go back to the main menu: ")
 
