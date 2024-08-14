@@ -246,6 +246,8 @@ class localai_model_manager:
         use_llava = "false"
         use_enbed = "false"
 
+        answer1 = "fallback"
+
         answerencrypted = "false"
 
         questionbasic = "Would you like to install a LLM?: "
