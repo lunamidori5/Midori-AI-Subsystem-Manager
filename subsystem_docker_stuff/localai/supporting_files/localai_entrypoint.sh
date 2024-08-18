@@ -228,4 +228,4 @@ fi
 
 echo "===> Starting LocalAI[$PROFILE] with the following models: $MODELS"
 
-/build/local-ai
+/build/local-ai --p2p
