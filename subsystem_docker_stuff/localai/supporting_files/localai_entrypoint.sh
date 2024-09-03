@@ -138,27 +138,27 @@ set -e
 cd /models
 
 if [ ! -f en_US-amy-medium.onnx.json ]; then
-	midori_ai_downloader en_US-amy-medium.onnx.json
+	#midori_ai_downloader en_US-amy-medium.onnx.json
 fi
 if [ ! -f en_US-amy-medium.onnx ]; then
-	midori_ai_downloader en_US-amy-medium.onnx
+	#midori_ai_downloader en_US-amy-medium.onnx
 fi
 if [ ! -f en-us-kathleen-low.onnx.json ]; then
-	midori_ai_downloader en-us-kathleen-low.onnx.json
+	#midori_ai_downloader en-us-kathleen-low.onnx.json
 fi
 if [ ! -f en-us-kathleen-low.onnx ]; then
-	midori_ai_downloader en-us-kathleen-low.onnx
+	#midori_ai_downloader en-us-kathleen-low.onnx
 fi
 
 if [ ! -f diffusers.yaml ]; then
-	midori_ai_downloader diffusers.yaml
+	#midori_ai_downloader diffusers.yaml
 fi
 
 if [ ! -f bert-embeddings.yaml ]; then
-	midori_ai_downloader bert-embeddings.yaml
+	#midori_ai_downloader bert-embeddings.yaml
 fi
 if [ ! -f bert-MiniLM-L6-v2q4_0.bin ]; then
-	midori_ai_downloader bert-MiniLM-L6-v2q4_0.bin
+	#midori_ai_downloader bert-MiniLM-L6-v2q4_0.bin
 fi
 
 if [ ! -f ggml-model-q4_k.gguf ]; then

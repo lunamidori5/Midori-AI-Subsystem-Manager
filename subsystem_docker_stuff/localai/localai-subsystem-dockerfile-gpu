@@ -28,7 +28,6 @@ RUN mv midori_ai_downloader /usr/local/bin
 RUN chmod 777 localai_entrypoint.sh
 RUN chmod +x localai_entrypoint.sh
 RUN cp localai_entrypoint.sh /build/entrypoint_md_ai.sh
-RUN cp localai_entrypoint.sh /aio/entrypoint_md_ai.sh
 
 RUN python3 -m pip install --no-cache-dir cryptography aiohttp tk
 RUN python3 -m pip install --no-cache-dir -r midori_program_requirments.txt
@@ -38,4 +37,4 @@ RUN apt-get autoclean && apt-get clean
 
 RUN echo "Placeholder: USER localai"
 
-CMD ./aio/entrypoint_md_ai.sh
+CMD ./build/entrypoint_md_ai.sh
