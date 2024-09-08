@@ -45,17 +45,17 @@ for line in lines:
     print(f"Installing " + line.strip() + " using pip")
     # Doing it this way as its better on saving space, and slower
     # Does not endup leaving things on the harddrive at the end
-    os.system('pip install --force-reinstall ' + line.strip() + ' >> build_log.txt')
-    os.system('pip cache purge')
+    os.system('temp/bin/pip install --force-reinstall ' + line.strip() + ' >> build_log.txt')
+    os.system('temp/bin/pip cache purge')
 
 if os.name == 'posix':
     print("Downloading the needed files...")
     for file_name, download_url in files_to_download_enx.items():
-        os.system(f"python3 helper_app.py {file_name}")
+        os.system(f"temp/bin/python helper_app.py {file_name}")
         
 # Run the Python program
 print("Making the python exe file...")
-os.system('pyinstaller --onefile --clean model_installer.py')
+os.system('temp/bin/pyinstaller --onefile --clean model_installer.py')
 
 # Purge the downloaded files
 print("Purging the downloaded files ...")

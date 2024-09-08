@@ -49,6 +49,23 @@ def log(message):
     with open(log_file_name, "w") as f:
         f.write(contents)
 
+def check_os_release(string):
+  """Check if a string is in /etc/os-release.
+
+  Args:
+    string: The string to check.
+
+  Returns:
+    True if the string is in /etc/os-release, False otherwise.
+  """
+
+  with open("/etc/os-release") as f:
+    lines = f.readlines()
+  for line in lines:
+    if string in line:
+      return True
+  return False
+
 def download_commands(site_url, discord_id):
     response = requests.get(site_url, headers={"Discord-ID": discord_id})
     if response.status_code == 200:
@@ -129,7 +146,11 @@ def check_for_update(ver_os_info, ver_info, client):
         
         # Run commands based on the OS
         if bypass == "none":
-            if ver_os_info == 'windows':
+            if check_os_release("Subsystem Manager"):
+                log("We are running in PixelArch OS, please update your PixelArch Subsystem Manger")
+                exit(0)
+                
+            elif ver_os_info == 'windows':
 
                 os.system("echo @echo off > restart.bat")
                 os.system("echo title Updating Midori AI Subsystem >> restart.bat")

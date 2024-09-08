@@ -83,14 +83,13 @@ if os.name == 'nt':
     os.system("del model_installer.exe > nul")
     os.system("del restart.bat > nul")
     os.system("del docker.exe > nul")
+elif os.path.exists("running_subsystem_manager_other_os.py"):
+    print("Other OS: Runner seen, updating it")
+    os.system("curl -sSL https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/midori_ai_manager/subsystem_python_runner.py > subsystem_python_runner.py")
 else:
     os.system("rm -f model_installer_linux.tar.gz > /dev/null")
     os.system("rm -f subsystem_manager.tar.gz > /dev/null")
     os.system("rm -f model_installer > /dev/null")
-
-if os.path.exists("running_subsystem_manager_other_os.py"):
-    print("Other OS: Runner seen, updating it")
-    os.system("curl -sSL https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/midori_ai_manager/subsystem_python_runner.py > subsystem_python_runner.py")
 
 
 client_openai = help_add_on.setup_carly(temp_list)

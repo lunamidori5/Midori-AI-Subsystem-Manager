@@ -1,0 +1,17 @@
+FROM lunamidori5/pixelarch:topaz
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN sudo sed -i 's/Topaz/Subsystem Manager/g' /etc/os-release
+
+RUN yay -Syu --noconfirm python310 && yay -Yccc --noconfirm
+
+RUN touch other_os.txt
+
+RUN curl -k --disable --disable-eprt -s https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/midori_ai_manager/subsystem_python_env_setup.py > subsystem_setup.py
+RUN python subsystem_setup.py && mv dist/model_installer /usr/bin/subsystem_manager && chmod +x /usr/bin/subsystem_manager && rm -rf dist model_installer.spec temp 
+
+CMD ["sleep", "infinity"]
