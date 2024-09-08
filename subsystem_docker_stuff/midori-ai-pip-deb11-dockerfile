@@ -5,6 +5,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+RUN echo "This docker is now being deprecated... please switch to PixelArch"
+
 RUN apt-get update 
 
 RUN apt-get install -y unzip zip tar curl tree wget git
