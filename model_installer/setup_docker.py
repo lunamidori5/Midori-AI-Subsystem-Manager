@@ -215,7 +215,7 @@ def dev_setup_docker(DockerClient, compose_path, ver_os_info, containers, use_gu
                         "GPUUSE": GPUUSE,
                         "BOTHUSE": BOTHUSE,
                         "DISCORD_ID": discord_id,
-                    },  # env_file is commented out
+                    },
                     "volumes": ["./:/app/system_files", "./files:/app/files", "midori-ai:/app/int-files", f"{vol_mountpoint}-models/_data:/app/models", f"{vol_mountpoint}-images/_data:/app/images", f"{vol_mountpoint}-audio/_data:/app/audio", "/var/run/docker.sock:/var/run/docker.sock"],
                 }
             },
@@ -250,7 +250,7 @@ def dev_setup_docker(DockerClient, compose_path, ver_os_info, containers, use_gu
                         "GPUUSE": GPUUSE,
                         "BOTHUSE": BOTHUSE,
                         "DISCORD_ID": discord_id,
-                    },  # env_file is commented out
+                    },
                     "volumes": ["./:/app/system_files", "./files:/app/files", "midori-ai:/app/int-files", f"{vol_mountpoint}-models/_data:/app/models", f"{vol_mountpoint}-images/_data:/app/images", f"{vol_mountpoint}-audio/_data:/app/audio", "/var/run/docker.sock:/var/run/docker.sock"],
                 }
             },
