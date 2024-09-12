@@ -10,6 +10,21 @@ from nicegui.events import ValueChangeEventArguments
 
 temp_menu = False
 
+def get_docker_json():
+    temp_file = "docker_ps_output.md"
+    format_info = str("""{{.Names}}: ID - {{.ID}} Command - {{.Command}} \\n""")
+    
+    os.system(f"docker ps -a --format \"{format_info}\" > {temp_file}")
+
+    with open(temp_file, "r") as f:
+        data = f.read()
+        
+    os.remove(temp_file)
+    return data
+
+markdown_box = ui.code(str(get_docker_json()))
+markdown_box.update
+
 async def update_system():
     ui.notify('Asynchronous task started')
     await asyncio.sleep(5)
@@ -21,9 +36,7 @@ async def subsystem_update():
     n.message = f'Starting Install... Please wait...'
     n.spinner = True
     await asyncio.sleep(5)
-
-    tempcommand_str = "docker run -v /var/run/docker.sock:/var/run/docker.sock -it lunamidori5/pixelarch:subsystem /usr/bin/yay -Syu --noconfirm"
-    command_str = "docker run -v /var/run/docker.sock:/var/run/docker.sock lunamidori5/pixelarch:subsystem \"/usr/bin/yay -Syu --noconfirm\""
+    command_str = "docker run -v /var/run/docker.sock:/var/run/docker.sock lunamidori5/pixelarch:subsystem /usr/bin/yay -Syu --noconfirm && echo hello"
     n.message = f'Running: {command_str}'
     command_list = command_str.split()
 
@@ -51,7 +64,9 @@ async def subsystem_update():
 
     n.message = 'Done!'
     n.spinner = False
-    await asyncio.sleep(15)
+    markdown_box.update()
+    await asyncio.sleep(2)
+
     n.dismiss()
 
 def on_button_click(sender):
