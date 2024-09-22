@@ -1,3 +1,5 @@
+# Big UPDATE! (9/22/24)
+We have started working on a GUI for the Subsystem, and fully remaking it to work with all docker sock types and working no matter the host os. If you would like to test, check out the `Subsystem_pixelarch` folder!
 
 # Midori AI Subsystem: Streamlining AI Workloads
 
