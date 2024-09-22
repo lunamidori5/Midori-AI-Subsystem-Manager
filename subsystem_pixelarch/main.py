@@ -38,12 +38,12 @@ async def subsystem_update():
 
     image_download = "lunamidori5/midori_ai_subsystem"
     image_name = "midori_ai_subsystem_pixelarch"
-    full_image_name = f"--name {image_name}"
-    docker_sock = "-v /var/run/docker.sock:/var/run/docker.sock"
+    full_image_name_command = f"--name {image_name}"
+    docker_sock_command = "-v /var/run/docker.sock:/var/run/docker.sock"
 
     command_pre_list = [
         f"docker pull {image_download}",
-        f"docker run -d {docker_sock} {full_image_name} {image_download} sleep infinity",
+        f"docker run -d {docker_sock_command} {full_image_name_command} {image_download} sleep infinity",
         f"docker exec {image_name} /usr/bin/yay -Syu --noconfirm"
         ]
 
