@@ -33,10 +33,31 @@ def get_docker_json():
 markdown_box = ui.code(str(get_docker_json()))
 markdown_box.update
 
-async def update_system():
-    ui.notify('Asynchronous task started')
-    await asyncio.sleep(5)
-    ui.notify('Asynchronous task finished')
+class Manager_mode:
+    def __init__(self):
+        self.type = "unknown"
+    
+    def check_type(self, command_in):
+        if self.type == "Ephemeral":
+            print("Not installing")
+        elif self.type == 'Install':
+            print("Installing")
+        elif self.type == 'Purge':
+            print("Purging")
+
+manager = Manager_mode()
+
+def handle_toggle_change(toggle):
+    print("Command ran")
+    value = toggle.value
+    if value == 'Ephemeral':
+        manager.type = 'Ephemeral'
+    elif value == 'Install':
+        manager.type = 'Install'
+    elif value == 'Purge':
+        manager.type = 'Purge'
+    else:
+        print(f"Unknown Var: {str(value)}")
 
 async def subsystem_repair():
     # Create a new subprocess to run the install command
@@ -117,9 +138,8 @@ async def subsystem_update():
     await asyncio.sleep(25)
 
     n.dismiss()
-
-def on_button_click(sender):
-    print(f"You clicked button {sender}!")
+    
+ui.separator()
 
 v = ui.switch('Boot Subsystem?', value=temp_menu)
 
@@ -131,6 +151,15 @@ with ui.row():
     ui.button('Dark', on_click=dark.enable)
     ui.button('Light', on_click=dark.disable)
 
+ui.separator()
+
+with ui.row():
+    ui.label("Manager Mode:")
+    toggle = ui.toggle(['Ephemeral', 'Install', 'Purge'], value='Ephemeral')
+    toggle.on_value_change(handle_toggle_change) 
+
+ui.separator()
+
 with ui.row().bind_visibility_from(v, 'value'):
     markdown_box.update
     with ui.column():
@@ -138,8 +167,7 @@ with ui.row().bind_visibility_from(v, 'value'):
         with ui.row():
             ui.button("Midori AI Subsystem Install / Repair", on_click=subsystem_repair)
             ui.button("Midori AI Subsystem Update", on_click=subsystem_update)
-            ui.button("Midori AI Subsystem Shutdown", on_click=subsystem_update)
-        ui.button("2 - Install Backends to Subsystem", on_click=on_button_click)
+        ui.button("2 - Install Backends to Subsystem", on_click=None)
         #ui.button("3 - Update Backends in Subsystem", on_click=on_button_click)
         #ui.button("4 - Uninstall Backends from Subsystem", on_click=on_button_click)
         #ui.button("5 - Backend Programs (install models / edit backends)", on_click=on_button_click)
