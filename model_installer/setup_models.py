@@ -100,6 +100,8 @@ class backend_programs_manager:
 
         answerstartup = int(answerstartup)
 
+        print(type(answerstartup))
+
         if 9 <= answerstartup <= 20:
             localai = localai_model_manager(self.ver_os_info, self.client, self.about_model_size, self.about_model_q_size, self.client_openai)
 

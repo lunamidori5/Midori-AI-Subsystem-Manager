@@ -254,35 +254,18 @@ def check_str(question, valid_answers, use_gui="no", layout=None, sg=None, suppo
     The user's input if it is valid, or None otherwise.
     """
 
-    if use_gui == "yes":
-        window = sg.Window('LocalAI Manager', layout, font=('Helvetica', ' 13'), default_button_element_size=(8,2), use_default_focus=False, resizable=True, margins=(0,0), use_custom_titlebar=True, finalize=True, keep_on_top=True)
-
-        while True:     # The Event Loop
-            event, values = window.read()
-            if event in (sg.WIN_CLOSED, 'EXIT'):            # quit if exit button or X
-                break
-            if event == 'SEND':
-                query = str(values['-QUERY-'].rstrip())
-                if query in valid_answers:
-                    log(f"I asked {question} / you replied {query}")
-                    window.close()
-                    return query
-
-        window.close()
-
-    else:
-        while True:
-            answer = input(f"\n{question}\n").lower()
-            if answer in valid_answers:
-                log(f"I asked {question} / you replied {answer}")
-                return answer
+    while True:
+        answer = input(f"\n{question}\n").lower()
+        if answer in valid_answers:
+            log(f"I asked {question} / you replied {answer}")
+            return answer
+        else:
+            if answer == "help":
+                ver_os_info = get_os_info()
+                support_chat.chat_room(support_chat.request_info("system_prompt.txt"), client_openai, ver_os_info, support_context)
             else:
-                if answer == "help":
-                    ver_os_info = get_os_info()
-                    support_chat.chat_room(support_chat.request_info("system_prompt.txt"), client_openai, ver_os_info, support_context)
-                else:
-                    log(f"\nInvalid input. Please enter one of the following: {', '.join(valid_answers)}\n")
-                    log(f"\nIf you need help, please type ``help``.\n")
+                log(f"\nInvalid input. Please enter one of the following: {', '.join(valid_answers)}\n")
+                log(f"\nIf you need help, please type ``help``.\n")
 
 class backends_checking():
     def load_installed_backends(self, path):
