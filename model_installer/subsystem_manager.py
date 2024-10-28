@@ -112,7 +112,11 @@ client = s.get_docker_client(Fore, ver_os_info, docker, client_openai)
 # List all containers
 s.clear_window(ver_os_info)
 
-s.check_for_update(ver_os_info, ver_info, client)
+try:
+    s.check_for_update(ver_os_info, ver_info, client)
+except Exception as e:
+    s.log(f"Something errored with updater - {str(e)}")
+    s.log(f"Not updating, please run the subsystem repair or contact Midori AI")
 
 s.clear_window(ver_os_info)
 
@@ -184,7 +188,13 @@ while True:
     temp_main_menu_dash = dash * main_menu_dash
 
     s.clear_window(ver_os_info)
-    s.check_for_subsystem_update(ver_os_info, ver_info, DockerClient, compose_path, containers, use_gui, sg, client, ver_info, layout, client_openai, discord_id, subsystem_file_name)
+    
+    try:
+        s.check_for_subsystem_update(ver_os_info, ver_info, DockerClient, compose_path, containers, use_gui, sg, client, ver_info, layout, client_openai, discord_id, subsystem_file_name)
+    except Exception as e:
+        s.log(f"Something errored with updater - {str(e)}")
+        s.log(f"Not updating, please run the subsystem repair or contact Midori AI")
+
     s.clear_window(ver_os_info)
 
     s.log(blank_line)

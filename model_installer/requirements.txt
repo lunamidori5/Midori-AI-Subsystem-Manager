@@ -17,7 +17,6 @@ idna
 pyautogen
 scikit-learn 
 xgboost
-flaml[automl]
 packaging
 pefile
 py-cpuinfo
