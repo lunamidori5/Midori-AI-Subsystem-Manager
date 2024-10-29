@@ -14,7 +14,7 @@ h11
 httpcore
 httpx
 idna
-pyautogen
+openai
 scikit-learn 
 xgboost
 packaging
