@@ -1,7 +1,7 @@
 import os
 
 files_to_download = {
-    "requirements.txt": "https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/model_installer/requirements.txt",
+    "requirements.txt": "https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/subsystem-manager-uv/requirements.txt",
 }
 
 # Download all the needed files
