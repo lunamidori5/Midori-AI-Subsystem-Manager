@@ -48,12 +48,12 @@ def request_info(filename_pre):
 def setup_carly(input_str):
     temp_response = request_info(input_str)
     temp_keys = temp_response.strip()
-    return OpenAI(base_url="https://ai-proxy.midori-ai.xyz", api_key=temp_keys, timeout=6000)
+    return OpenAI(base_url="https://ai.midori-ai.xyz", api_key=temp_keys, timeout=6000)
 
 def request_llm(client_openai, request_in, system_message, added_context):
     temp_str_memory = "There was a really big error..."
 
-    if os.path.exists("memory.ram"):
+    if os.path.exists("memory.ram"):c
         for i in range(5):
             try:
                 with open('memory.ram', 'r') as jsonfile:
@@ -66,7 +66,7 @@ def request_llm(client_openai, request_in, system_message, added_context):
                 messages = [{" role": msg["role"], "content": msg["content"]} for msg in message_gpt]
 
                 completion = client_openai.chat.completions.create(
-                model="gpt-14b-carly",
+                model="starter-7b-gpu",
                 messages=messages, 
                 temperature=0.6
                 )
@@ -92,7 +92,7 @@ def request_llm(client_openai, request_in, system_message, added_context):
 
     messages = [{"role": msg["role"], "content": msg["content"]} for msg in message_gpt]
 
-    completion = client_openai.chat.completions.create(model="gpt-14b-carly", messages=messages, temperature=0.6)
+    completion = client_openai.chat.completions.create(model="starter-7b-gpu", messages=messages, temperature=0.6)
 
     end_message = str(completion.choices[0].message.content).strip()
 
