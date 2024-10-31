@@ -53,7 +53,7 @@ def setup_carly(input_str):
 def request_llm(client_openai, request_in, system_message, added_context):
     temp_str_memory = "There was a really big error..."
 
-    if os.path.exists("memory.ram"):c
+    if os.path.exists("memory.ram"):
         for i in range(5):
             try:
                 with open('memory.ram', 'r') as jsonfile:
