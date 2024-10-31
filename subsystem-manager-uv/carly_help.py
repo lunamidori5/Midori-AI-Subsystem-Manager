@@ -96,7 +96,7 @@ def request_llm(client_openai, request_in, system_message, added_context):
 
     end_message = str(completion.choices[0].message.content).strip()
 
-    s.log(client_openai.extract_text_or_completion_object(completion))
+    s.log(end_message)
 
     print(f"Trying to save memory...")
     session_inside.append({"role": "memory", "content": f"The User said ``{request_in}``"})
