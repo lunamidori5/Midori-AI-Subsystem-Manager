@@ -44,6 +44,7 @@ dependencies = [
     "typing-extensions>=4.12.2",
     "urllib3>=2.2.3",
     "xgboost>=2.1.2",
+    "halo>=0.0.31",
 ]
 
 [tool.uv.sources]
