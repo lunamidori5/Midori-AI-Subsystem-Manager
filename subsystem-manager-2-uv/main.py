@@ -3,7 +3,6 @@
 
 import os
 import asyncio
-import subprocess
 
 from halo import Halo
 
@@ -38,6 +37,7 @@ class Manager_mode:
     def __init__(self):
         self.type = "unknown"
         self.command_base = docker_command
+        self.port = 38080
         self.use_gpu = False
     
     def check_type(self, command_in):
@@ -47,6 +47,9 @@ class Manager_mode:
             print("Installing")
         elif self.type == 'Purge':
             print("Purging")
+    
+    def change_port(self, port):
+        self.port = int(port)
 
 manager = Manager_mode()
 
@@ -58,6 +61,15 @@ def handle_toggle_change(toggle):
         manager.type = 'Install'
     elif value == 'Purge':
         manager.type = 'Purge'
+    else:
+        print(f"Unknown Var: {str(value)}")
+
+def handle_gput_toggle_change(toggle):
+    value = toggle.value
+    if value == 'Use GPU':
+        manager.use_gpu = True
+    elif value == 'No GPU':
+        manager.use_gpu = False
     else:
         print(f"Unknown Var: {str(value)}")
 
@@ -114,7 +126,8 @@ async def subsystem_update():
     n.spinner = True
 
     command_pre_list = [
-        f"{docker_command} exec {image_name} /usr/bin/yay -Syu --noconfirm"
+        f"{manager.command_base} exec {image_name} /usr/bin/yay -Syu --noconfirm",
+        f"sudo midori-ai-updater"
         ]
     
     await run_commands_async(n, command_pre_list)
@@ -128,10 +141,43 @@ async def subsystem_update():
     await asyncio.sleep(25)
 
     n.dismiss()
-    
-ui.separator()
 
-v = ui.switch('Boot Subsystem?', value=temp_menu)
+async def localai_install():
+    # Create a new subprocess to run the update command
+    n = ui.notification(timeout=None)
+    n.message = f'Starting Install... Please wait...'
+    run_command = ""
+    local_image_download = ""
+    n.spinner = True
+
+    print(manager.type)
+
+    command_pre_list = []
+
+    if manager.type == "Purge":
+        run_command = f"{manager.command_base} stop midori-ai-local-ai && {manager.command_base} rm midori-ai-local-ai"
+    
+    else:
+        if manager.use_gpu:
+            run_command = f"{manager.command_base} run --gpus all -p {manager.port}:8080 --name midori-ai-local-ai -ti localai/localai:latest-aio-gpu-nvidia-cuda-11"
+        else:
+            run_command = f"{manager.command_base} run -p {manager.port}:8080 --name midori-ai-local-ai -ti localai/localai:latest-aio-cpu"
+    
+    command_pre_list.append(f"{run_command} ")
+        
+    await run_commands_async(n, command_pre_list)
+
+    # Wait for the process to finish running
+    await asyncio.sleep(5)
+
+    n.message = 'Done! LocalAI full installed and updated!'
+    n.spinner = False
+    markdown_box.update()
+    await asyncio.sleep(25)
+
+    n.dismiss()
+
+ui.separator()
 
 dark = ui.dark_mode(True)
 
@@ -144,30 +190,32 @@ ui.separator()
 
 with ui.row():
     ui.label("Manager Mode:")
-    toggle = ui.toggle(['Ephemeral', 'Install', 'Purge'], value='Ephemeral')
+    toggle = ui.toggle(['Install', 'Purge'])
+    toggle_gpu = ui.toggle(['Use GPU', 'No GPU'], value='No GPU')
     toggle.on_value_change(handle_toggle_change) 
+    toggle_gpu.on_value_change(handle_gput_toggle_change) 
 
 ui.separator()
 
-with ui.row().bind_visibility_from(v, 'value'):
-    if image_name in str(get_docker_json()):
-        markdown_box = ui.code(str(get_docker_json()))
-        markdown_box.update
-        with ui.column():
-            with ui.row():
-                ui.label("Subsystem Actions:")
-                ui.button("Subsystem Repair", on_click=subsystem_repair)
-                ui.button("Subsystem Update", on_click=subsystem_update)
-            with ui.row():
-                ui.button("Install Backends to Subsystem", on_click=None)
-            #ui.button("3 - Update Backends in Subsystem", on_click=on_button_click)
-            #ui.button("4 - Uninstall Backends from Subsystem", on_click=on_button_click)
-            #ui.button("5 - Backend Programs (install models / edit backends)", on_click=on_button_click)
-            #ui.button("6 - Subsystem and Backend News", on_click=on_button_click)
-    else:
-        with ui.column():
-            with ui.row():
-                ui.label("Subsystem Actions:")
-                ui.button("Subsystem Install", on_click=subsystem_repair)
+with ui.row():
+    markdown_box = ui.code(str(get_docker_json()))
+    ui.update(markdown_box)
+    with ui.column():
+        with ui.row():
+            ui.label("Subsystem Actions:")
+        with ui.row():
+            ui.button("Subsystem Install", on_click=subsystem_repair)
+            ui.button("Subsystem Repair", on_click=subsystem_repair)
+            ui.button("Subsystem Update", on_click=subsystem_update)
+        with ui.row():
+            ui.label("Install Backends:")
+        with ui.row():
+            ui.input(label='Port Number', placeholder='start typing', on_change=lambda e: manager.change_port(e.value))
+            ui.button("LocalAI", on_click=localai_install)
+            ui.button("Big-AGI", on_click=subsystem_repair)
+        #ui.button("3 - Update Backends in Subsystem", on_click=on_button_click)
+        #ui.button("4 - Uninstall Backends from Subsystem", on_click=on_button_click)
+        #ui.button("5 - Backend Programs (install models / edit backends)", on_click=on_button_click)
+        #ui.button("6 - Subsystem and Backend News", on_click=on_button_click)
 
 ui.run()
