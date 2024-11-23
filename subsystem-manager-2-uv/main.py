@@ -5,6 +5,8 @@ import os
 import asyncio
 import subprocess
 
+from halo import Halo
+
 from nicegui import ui, app
 from nicegui.events import ValueChangeEventArguments
 
@@ -12,6 +14,8 @@ temp_menu = False
 
 image_download = "lunamidori5/midori_ai_subsystem"
 image_name = "midori_ai_subsystem_pixelarch"
+
+spinner = Halo(text='Loading', spinner='dots', color='green')
 
 docker_command = "docker"
 
@@ -30,12 +34,11 @@ def get_docker_json():
     os.remove(temp_file)
     return data
 
-markdown_box = ui.code(str(get_docker_json()))
-markdown_box.update
-
 class Manager_mode:
     def __init__(self):
         self.type = "unknown"
+        self.command_base = docker_command
+        self.use_gpu = False
     
     def check_type(self, command_in):
         if self.type == "Ephemeral":
@@ -48,7 +51,6 @@ class Manager_mode:
 manager = Manager_mode()
 
 def handle_toggle_change(toggle):
-    print("Command ran")
     value = toggle.value
     if value == 'Ephemeral':
         manager.type = 'Ephemeral'
@@ -59,21 +61,9 @@ def handle_toggle_change(toggle):
     else:
         print(f"Unknown Var: {str(value)}")
 
-async def subsystem_repair():
-    # Create a new subprocess to run the install command
-    n = ui.notification(timeout=None)
-    n.message = f'Starting Install... Please wait...'
-    n.spinner = True
-
-    full_image_name_command = f"--name {image_name}"
-
-    command_pre_list = [
-        f"{docker_command} pull {image_download}",
-        f"{docker_command} run -d {docker_sock_command} {full_image_name_command} {image_download} sleep infinity",
-        f"{docker_command} exec {image_name} /usr/bin/yay -Syu --noconfirm"
-        ]
-
+async def run_commands_async(n, command_pre_list):
     for command_str in command_pre_list:
+        spinner.start(text=f'Running: {command_str}')
         n.message = f'Running: {command_str}'
         command_list = command_str.split()
 
@@ -89,12 +79,33 @@ async def subsystem_repair():
 
             # Print the output to the console
             output = stdout.decode('utf-8')
-            n.message = f"Output: {output}"
             command_outerr = stderr.decode('utf-8')
 
             # Check if the process has finished running
             if process.returncode is not None:
+                spinner.succeed(text=f"Output: {output}")
                 break
+
+async def subsystem_repair():
+    # Create a new subprocess to run the install command
+    n = ui.notification(timeout=None)
+    n.message = f'Starting Install... Please wait... Check command line for more info...'
+    n.spinner = True
+    spinner.start(text='Starting Install... Please wait...')
+
+    full_image_name_command = f"--name {image_name}"
+
+    command_pre_list = [
+        f"{manager.command_base} pull {image_download}",
+        f"{manager.command_base} run -d {docker_sock_command} {full_image_name_command} {image_download} sleep infinity",
+        f"{manager.command_base} exec {image_name} /usr/bin/yay -Syu --noconfirm"
+        ]
+    
+    await run_commands_async(n, command_pre_list)
+    
+    spinner.succeed(text="All Done!")
+
+    n.dismiss()
 
 async def subsystem_update():
     # Create a new subprocess to run the update command
@@ -105,29 +116,8 @@ async def subsystem_update():
     command_pre_list = [
         f"{docker_command} exec {image_name} /usr/bin/yay -Syu --noconfirm"
         ]
-
-    for command_str in command_pre_list:
-        n.message = f'Running: {command_str}'
-        command_list = command_str.split()
-
-        process = await asyncio.create_subprocess_exec(
-            *command_list,
-            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-        )
-
-        # Read the output of the process in real time
-        while True:
-            # Read the stdout and stderr of the process
-            stdout, stderr = await process.communicate()
-
-            # Print the output to the console
-            output = stdout.decode('utf-8')
-            n.message = f"Output: {output}"
-            command_outerr = stderr.decode('utf-8')
-
-            # Check if the process has finished running
-            if process.returncode is not None:
-                break
+    
+    await run_commands_async(n, command_pre_list)
 
     # Wait for the process to finish running
     await asyncio.sleep(5)
@@ -143,8 +133,7 @@ ui.separator()
 
 v = ui.switch('Boot Subsystem?', value=temp_menu)
 
-dark = ui.dark_mode()
-dark.enable()
+dark = ui.dark_mode(True)
 
 with ui.row():
     ui.label('Switch mode:')
@@ -161,16 +150,24 @@ with ui.row():
 ui.separator()
 
 with ui.row().bind_visibility_from(v, 'value'):
-    markdown_box.update
-    with ui.column():
-        ui.label("Subsystem Actions:")
-        with ui.row():
-            ui.button("Midori AI Subsystem Install / Repair", on_click=subsystem_repair)
-            ui.button("Midori AI Subsystem Update", on_click=subsystem_update)
-        ui.button("2 - Install Backends to Subsystem", on_click=None)
-        #ui.button("3 - Update Backends in Subsystem", on_click=on_button_click)
-        #ui.button("4 - Uninstall Backends from Subsystem", on_click=on_button_click)
-        #ui.button("5 - Backend Programs (install models / edit backends)", on_click=on_button_click)
-        #ui.button("6 - Subsystem and Backend News", on_click=on_button_click)
+    if image_name in str(get_docker_json()):
+        markdown_box = ui.code(str(get_docker_json()))
+        markdown_box.update
+        with ui.column():
+            with ui.row():
+                ui.label("Subsystem Actions:")
+                ui.button("Subsystem Repair", on_click=subsystem_repair)
+                ui.button("Subsystem Update", on_click=subsystem_update)
+            with ui.row():
+                ui.button("Install Backends to Subsystem", on_click=None)
+            #ui.button("3 - Update Backends in Subsystem", on_click=on_button_click)
+            #ui.button("4 - Uninstall Backends from Subsystem", on_click=on_button_click)
+            #ui.button("5 - Backend Programs (install models / edit backends)", on_click=on_button_click)
+            #ui.button("6 - Subsystem and Backend News", on_click=on_button_click)
+    else:
+        with ui.column():
+            with ui.row():
+                ui.label("Subsystem Actions:")
+                ui.button("Subsystem Install", on_click=subsystem_repair)
 
 ui.run()
