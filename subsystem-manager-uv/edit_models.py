@@ -198,18 +198,6 @@ class subsystem_backend_manager:
             s.log(f"Uninstalling {item}")
             backend_checker.remove_backend(item)
             docker_name, dockerimage = backend_info.check_for_backend(f"{item}-midori-ai-backend")
-
-            ## OLD CODE NEEDED FOR SOME OS, WILL BE REMOVED SOON
-            ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-            if "Unraid" in os_checker:
-                #docker_commands.append(f"docker compose -f /app/files/{item}/docker-compose.yaml down --rmi all")
-                print("Skipping this step as to test new removeable docker run command")
-            else:
-                #docker_commands.append(f"docker compose -f ./files/{item}/docker-compose.yaml down --rmi all")
-                print("Skipping this step as to test new removeable docker run command")
-
-            ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 
             docker_commands.append(f"docker container kill {dockerimage.id}")
             docker_commands.append(f"docker container remove {dockerimage.id}")

@@ -145,9 +145,8 @@ async def subsystem_update():
 async def localai_install():
     # Create a new subprocess to run the update command
     n = ui.notification(timeout=None)
-    n.message = f'Starting Install... Please wait...'
+    n.message = f'Starting... Please wait...'
     run_command = ""
-    local_image_download = ""
     n.spinner = True
 
     print(manager.type)
@@ -159,9 +158,9 @@ async def localai_install():
     
     else:
         if manager.use_gpu:
-            run_command = f"{manager.command_base} run --gpus all -p {manager.port}:8080 --name midori-ai-local-ai -ti localai/localai:latest-aio-gpu-nvidia-cuda-11"
+            run_command = f"{manager.command_base} run -d --gpus all -p {manager.port}:8080 --name midori-ai-local-ai -ti localai/localai:latest-aio-gpu-nvidia-cuda-11"
         else:
-            run_command = f"{manager.command_base} run -p {manager.port}:8080 --name midori-ai-local-ai -ti localai/localai:latest-aio-cpu"
+            run_command = f"{manager.command_base} run -d -p {manager.port}:8080 --name midori-ai-local-ai -ti localai/localai:latest-aio-cpu"
     
     command_pre_list.append(f"{run_command} ")
         
@@ -170,7 +169,7 @@ async def localai_install():
     # Wait for the process to finish running
     await asyncio.sleep(5)
 
-    n.message = 'Done! LocalAI full installed and updated!'
+    n.message = 'Done!'
     n.spinner = False
     markdown_box.update()
     await asyncio.sleep(25)
@@ -210,7 +209,7 @@ with ui.row():
         with ui.row():
             ui.label("Install Backends:")
         with ui.row():
-            ui.input(label='Port Number', placeholder='start typing', on_change=lambda e: manager.change_port(e.value))
+            ui.input(label='Port Number', placeholder='38080', on_change=lambda e: manager.change_port(e.value))
             ui.button("LocalAI", on_click=localai_install)
             ui.button("Big-AGI", on_click=subsystem_repair)
         #ui.button("3 - Update Backends in Subsystem", on_click=on_button_click)
