@@ -225,6 +225,8 @@ async def bigagi_two_install():
     else:
         local_port_offset = 0
     
+    image_download = "lunamidori5/pixelarch:amethyst"
+    
     port_to_use = manager.port + local_port_offset
     full_image_name_command = f"--name {manager.image}"
 
@@ -236,7 +238,7 @@ async def bigagi_two_install():
     builder_command_list = [
         f"{manager.command_base} pull {image_download}",
         f"{manager.command_base} {docker_run_command} -d {docker_sock_command} -p {port_to_use}:3000 {full_image_name_command} {image_download} sleep infinity",
-        f"{manager.dockerexec} yay -Syu --noconfirm"
+        f"{manager.dockerexec} yay -Syu --noconfirm nodejs nvm && yay -Yccc --noconfirm"
         ]
     
     command_pre_list = []
