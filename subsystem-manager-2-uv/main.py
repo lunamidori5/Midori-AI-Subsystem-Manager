@@ -80,8 +80,8 @@ manager = Manager_mode()
 
 def handle_toggle_change(toggle):
     value = toggle.value
-    if value == 'Ephemeral':
-        manager.type = 'Ephemeral'
+    if value == 'Update':
+        manager.type = 'Update'
     elif value == 'Install':
         manager.type = 'Install'
     elif value == 'Purge':
@@ -284,6 +284,49 @@ async def bigagi_two_install():
 
     manager.reset_image()
 
+
+async def anythingllm_install():
+    n = ui.notification(timeout=None)
+    n.message = f'Starting... Please wait...'
+    runsh_path = os.path.join(".", "run.sh")
+    manager.change_image("midori-ai-anythingllm")
+    n.spinner = True
+
+    if manager.port == 30000:
+        local_port_offset = 3001
+    else:
+        local_port_offset = 0
+    
+    image_download = "lunamidori5/pixelarch:amethyst"
+    
+    port_to_use = manager.port + local_port_offset
+    full_image_name_command = f"--name {manager.image}"
+
+    print(manager.type)
+    
+    command_pre_list = []
+
+    if manager.type == "Purge":
+        command_pre_list.append(f"{manager.command_base} stop {manager.image}")
+        command_pre_list.append(f"{manager.command_base} rm {manager.image}")
+    else:
+        """
+        export STORAGE_LOCATION=$HOME/anythingllm
+        mkdir -p $HOME/anythingllm 
+        touch "$HOME/anythingllm/.env"
+        docker run -d -p 3001:3001 
+        """
+
+        command_pre_list.append("mkdir -p $HOME/anythingllm")
+        command_pre_list.append("touch \"$HOME/anythingllm/.env\"")
+        command_pre_list.append(f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:3001 --name {manager.image} --cap-add SYS_ADMIN -v $HOME/anythingllm:/app/server/storage -v $HOME/anythingllm/.env:/app/server/.env -e STORAGE_DIR=\"/app/server/storage\" mintplexlabs/anythingllm")
+        
+    await run_commands_async(n, command_pre_list)
+
+    os.remove(runsh_path)
+
+    manager.reset_image()
+
 ui.separator()
 
 dark = ui.dark_mode(True)
@@ -322,13 +365,18 @@ with ui.row():
         with ui.row():
             ui.input(label='Port Number', placeholder='Edit to change port', on_change=lambda e: manager.change_port(e.value))
             with ui.column():
-                ui.label("LLM Systems:")
+                ui.label("LocalAI:")
                 ui.button("LocalAI", on_click=localai_install)
 
             with ui.column():
                 ui.label("Big AGI:")
                 ui.button("Big-AGI V1 (Stable)", on_click=bigagi_install)
                 ui.button("Big-AGI V2 (Beta - MUST REINSTALL EACH REBOOT)", on_click=bigagi_two_install)
+
+            with ui.column():
+                ui.label("AnythingLLM:")
+                ui.button("AnythingLLM", on_click=anythingllm_install)
+
         #ui.button("3 - Update Backends in Subsystem", on_click=on_button_click)
         #ui.button("4 - Uninstall Backends from Subsystem", on_click=on_button_click)
         #ui.button("5 - Backend Programs (install models / edit backends)", on_click=on_button_click)
