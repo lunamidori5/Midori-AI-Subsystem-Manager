@@ -121,6 +121,11 @@ async def run_commands_async(n, command_pre_list):
                 print(output)
                 await asyncio.sleep(2)
                 break
+            else:
+                spinner.fail(text=f"Output: {output} : {command_outerr}")
+                print(output)
+                await asyncio.sleep(2)
+                break
 
     await asyncio.sleep(5)
 
@@ -175,6 +180,7 @@ async def localai_install():
         local_port_offset = 0
     
     port_to_use = manager.port + local_port_offset
+    full_image_name_command = f"--name {manager.image}"
 
     print(manager.type)
 
@@ -185,9 +191,9 @@ async def localai_install():
     
     else:
         if manager.use_gpu:
-            run_command = f"{manager.command_base} {docker_run_command} -d --gpus all -p {port_to_use}:8080 --name {manager.image} -ti localai/localai:latest-aio-gpu-nvidia-cuda-11"
+            run_command = f"{manager.command_base} {docker_run_command} -d --gpus all -p {port_to_use}:8080 {full_image_name_command} -ti localai/localai:latest-aio-gpu-nvidia-cuda-11"
         else:
-            run_command = f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:8080 --name {manager.image} -ti localai/localai:latest-aio-cpu"
+            run_command = f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:8080 {full_image_name_command} -ti localai/localai:latest-aio-cpu"
     
     command_pre_list.append(f"{run_command} ")
         
@@ -208,6 +214,7 @@ async def bigagi_install():
         local_port_offset = 0
     
     port_to_use = manager.port + local_port_offset
+    full_image_name_command = f"--name {manager.image}"
 
     print(manager.type)
 
@@ -216,7 +223,7 @@ async def bigagi_install():
     if manager.type == "Purge":
         run_command = f"{manager.command_base} stop {manager.image} && {manager.command_base} rm {manager.image}"
     else:
-        run_command = f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:3000 --name {manager.image} -ti ghcr.io/enricoros/big-agi"
+        run_command = f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:3000 {full_image_name_command} -ti ghcr.io/enricoros/big-agi"
     
     command_pre_list.append(f"{run_command} ")
         
@@ -284,7 +291,6 @@ async def bigagi_two_install():
 
     manager.reset_image()
 
-
 async def anythingllm_install():
     n = ui.notification(timeout=None)
     n.message = f'Starting... Please wait...'
@@ -310,20 +316,9 @@ async def anythingllm_install():
         command_pre_list.append(f"{manager.command_base} stop {manager.image}")
         command_pre_list.append(f"{manager.command_base} rm {manager.image}")
     else:
-        """
-        export STORAGE_LOCATION=$HOME/anythingllm
-        mkdir -p $HOME/anythingllm 
-        touch "$HOME/anythingllm/.env"
-        docker run -d -p 3001:3001 
-        """
-
-        command_pre_list.append("mkdir -p $HOME/anythingllm")
-        command_pre_list.append("touch \"$HOME/anythingllm/.env\"")
-        command_pre_list.append(f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:3001 --name {manager.image} --cap-add SYS_ADMIN -v $HOME/anythingllm:/app/server/storage -v $HOME/anythingllm/.env:/app/server/.env -e STORAGE_DIR=\"/app/server/storage\" mintplexlabs/anythingllm")
+        command_pre_list.append(f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:3001 {full_image_name_command} --cap-add SYS_ADMIN -v anythingllm:/app/server/storage -e STORAGE_DIR=\"/app/server/storage\" mintplexlabs/anythingllm")
         
     await run_commands_async(n, command_pre_list)
-
-    os.remove(runsh_path)
 
     manager.reset_image()
 
