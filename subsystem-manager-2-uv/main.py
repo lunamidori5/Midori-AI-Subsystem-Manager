@@ -360,13 +360,13 @@ with ui.row():
                 ui.button("LocalAI", on_click=localai_install)
 
             with ui.column():
+                ui.label("AnythingLLM:")
+                ui.button("AnythingLLM", on_click=anythingllm_install)
+
+            with ui.column():
                 ui.label("Big AGI:")
                 ui.button("Big-AGI V1 (Stable)", on_click=bigagi_install)
                 ui.button("Big-AGI V2 (Beta - MUST REINSTALL EACH REBOOT)", on_click=bigagi_two_install)
-
-            with ui.column():
-                ui.label("AnythingLLM:")
-                ui.button("AnythingLLM", on_click=anythingllm_install)
 
         #ui.button("3 - Update Backends in Subsystem", on_click=on_button_click)
         #ui.button("4 - Uninstall Backends from Subsystem", on_click=on_button_click)
