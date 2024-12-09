@@ -53,8 +53,8 @@ class Manager_mode:
         self.use_gpu = False
     
     def check_type(self, command_in):
-        if self.type == "Ephemeral":
-            print("Not installing")
+        if self.type == "Update Install Purge":
+            print("Updating")
         elif self.type == 'Install':
             print("Installing")
         elif self.type == 'Purge':
@@ -81,7 +81,7 @@ manager = Manager_mode()
 def handle_toggle_change(toggle):
     value = toggle.value
     if value == 'Update':
-        manager.type = 'Update'
+        manager.type = 'Update Install Purge'
     elif value == 'Install':
         manager.type = 'Install'
     elif value == 'Purge':
@@ -171,7 +171,6 @@ async def localai_install():
     n = ui.notification(timeout=None)
     n.message = f'Starting... Please wait...'
     manager.change_image("midori-ai-local-ai")
-    run_command = ""
     n.spinner = True
 
     if manager.port == 30000:
@@ -186,16 +185,14 @@ async def localai_install():
 
     command_pre_list = []
 
-    if manager.type == "Purge":
-        run_command = f"{manager.command_base} stop {manager.image} && {manager.command_base} rm {manager.image}"
+    if "Purge".lower() in manager.type.lower():
+        command_pre_list.append(f"{manager.command_base} stop {manager.image} && {manager.command_base} rm {manager.image}")
     
-    else:
+    if "Install".lower() in manager.type.lower():
         if manager.use_gpu:
-            run_command = f"{manager.command_base} {docker_run_command} -d --gpus all -p {port_to_use}:8080 {full_image_name_command} -ti localai/localai:latest-aio-gpu-nvidia-cuda-11"
+            command_pre_list.append(f"{manager.command_base} {docker_run_command} -d --gpus all -p {port_to_use}:8080 {full_image_name_command} -ti localai/localai:latest-aio-gpu-nvidia-cuda-11")
         else:
-            run_command = f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:8080 {full_image_name_command} -ti localai/localai:latest-aio-cpu"
-    
-    command_pre_list.append(f"{run_command} ")
+            command_pre_list.append(f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:8080 {full_image_name_command} -ti localai/localai:latest-aio-cpu")
         
     await run_commands_async(n, command_pre_list)
 
@@ -205,7 +202,6 @@ async def bigagi_install():
     n = ui.notification(timeout=None)
     n.message = f'Starting... Please wait...'
     manager.change_image("midori-ai-big-agi")
-    run_command = ""
     n.spinner = True
 
     if manager.port == 30000:
@@ -220,12 +216,11 @@ async def bigagi_install():
 
     command_pre_list = []
 
-    if manager.type == "Purge":
-        run_command = f"{manager.command_base} stop {manager.image} && {manager.command_base} rm {manager.image}"
-    else:
-        run_command = f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:3000 {full_image_name_command} -ti ghcr.io/enricoros/big-agi"
-    
-    command_pre_list.append(f"{run_command} ")
+    if "Purge".lower() in manager.type.lower():
+        command_pre_list.append(f"{manager.command_base} stop {manager.image} && {manager.command_base} rm {manager.image}")
+
+    if "Install".lower() in manager.type.lower():
+        command_pre_list.append(f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:3000 {full_image_name_command} -ti ghcr.io/enricoros/big-agi")
         
     await run_commands_async(n, command_pre_list)
 
@@ -259,11 +254,11 @@ async def bigagi_two_install():
     command_pre_list = []
     builder_command_list = []
 
-    if manager.type == "Purge":
+    if "Purge".lower() in manager.type.lower():
         command_pre_list.append(f"{manager.command_base} stop {manager.image}")
         command_pre_list.append(f"{manager.command_base} rm {manager.image}")
-    else:
-
+        
+    if "Install".lower() in manager.type.lower():
         for command in starter_builder_command_list:
             command_pre_list.append(command)
 
@@ -312,10 +307,11 @@ async def anythingllm_install():
     
     command_pre_list = []
 
-    if manager.type == "Purge":
+    if "Purge".lower() in manager.type.lower():
         command_pre_list.append(f"{manager.command_base} stop {manager.image}")
         command_pre_list.append(f"{manager.command_base} rm {manager.image}")
-    else:
+        
+    if "Install".lower() in manager.type.lower():
         command_pre_list.append(f"{manager.command_base} {docker_run_command} -d -p {port_to_use}:3001 {full_image_name_command} --cap-add SYS_ADMIN -v anythingllm:/app/server/storage -e STORAGE_DIR=\"/app/server/storage\" mintplexlabs/anythingllm")
         
     await run_commands_async(n, command_pre_list)
@@ -335,7 +331,7 @@ ui.separator()
 
 with ui.row():
     ui.label("Manager Mode:")
-    toggle = ui.toggle(['Install', 'Purge'])
+    toggle = ui.toggle(['Install', 'Update', 'Purge'], value='Install')
     toggle_gpu = ui.toggle(['Use GPU', 'No GPU'], value='No GPU')
     toggle.on_value_change(handle_toggle_change) 
     toggle_gpu.on_value_change(handle_gput_toggle_change) 
