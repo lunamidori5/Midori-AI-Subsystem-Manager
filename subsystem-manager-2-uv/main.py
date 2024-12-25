@@ -329,6 +329,8 @@ with ui.row():
 
 ui.separator()
 
+ui.label("To install a backend please click Install Below")
+
 with ui.row():
     ui.label("Manager Mode:")
     toggle = ui.toggle(['Install', 'Update', 'Purge'], value='Install')
