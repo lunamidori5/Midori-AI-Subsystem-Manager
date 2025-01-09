@@ -137,47 +137,6 @@ set -e
 
 cd /models
 
-if [ ! -f en_US-amy-medium.onnx.json ]; then
-	#midori_ai_downloader en_US-amy-medium.onnx.json
-fi
-if [ ! -f en_US-amy-medium.onnx ]; then
-	#midori_ai_downloader en_US-amy-medium.onnx
-fi
-if [ ! -f en-us-kathleen-low.onnx.json ]; then
-	#midori_ai_downloader en-us-kathleen-low.onnx.json
-fi
-if [ ! -f en-us-kathleen-low.onnx ]; then
-	#midori_ai_downloader en-us-kathleen-low.onnx
-fi
-
-if [ ! -f diffusers.yaml ]; then
-	#midori_ai_downloader diffusers.yaml
-fi
-
-if [ ! -f bert-embeddings.yaml ]; then
-	#midori_ai_downloader bert-embeddings.yaml
-fi
-if [ ! -f bert-MiniLM-L6-v2q4_0.bin ]; then
-	#midori_ai_downloader bert-MiniLM-L6-v2q4_0.bin
-fi
-
-if [ ! -f ggml-model-q4_k.gguf ]; then
-	#wget --no-check-certificate --no-cache --no-cookies  https://tea-cup.midori-ai.xyz/download/llava-v1.5-13b-Q6_K.gguf
-    #mv llava-v1.5-13b-Q6_K.gguf ggml-model-q4_k.gguf
-fi
-if [ ! -f mmproj-model-f16.gguf ]; then
-    #wget --no-check-certificate --no-cache --no-cookies  https://tea-cup.midori-ai.xyz/download/mmproj-model-f16.gguf
-    
-fi
-if [ ! -f chat-simple.tmpl ]; then
-	#wget --no-check-certificate --no-cache --no-cookies https://github.com/mudler/LocalAI/blob/b8240b4c1839089b9d06a3e2b1c629a294cff87e/examples/configurations/llava/chat-simple.tmpl
-fi
-if [ ! -f llava.yaml ]; then
-	#wget --no-check-certificate --no-cache --no-cookies https://github.com/mudler/LocalAI/blob/b8240b4c1839089b9d06a3e2b1c629a294cff87e/examples/configurations/llava/llava.yaml
-fi
-
-##https://huggingface.co/mys/ggml_bakllava-1/resolve/main/ggml-model-q4_k.gguf
-
 cd /
 
 cd /build
