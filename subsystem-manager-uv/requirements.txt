@@ -11,6 +11,7 @@ distro
 git+https://github.com/docker/docker-py@main
 exceptiongroup
 h11
+rich
 halo
 httpcore
 httpx
