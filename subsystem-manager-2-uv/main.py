@@ -44,7 +44,7 @@ def get_docker_json():
 
 class Manager_mode:
     def __init__(self):
-        self.type = "unknown"
+        self.type = "Install"
         self.command_base = docker_command
         self.image = image_name
         self.dockerexec = f"{self.command_base} exec {self.image}"
@@ -88,6 +88,7 @@ def handle_toggle_change(toggle):
         manager.type = 'Purge'
     else:
         print(f"Unknown Var: {str(value)}")
+        manager.type = 'Install'
 
 def handle_gput_toggle_change(toggle):
     value = toggle.value
@@ -97,6 +98,7 @@ def handle_gput_toggle_change(toggle):
         manager.use_gpu = False
     else:
         print(f"Unknown Var: {str(value)}")
+        manager.use_gpu = False
 
 async def run_commands_async(n, command_pre_list):
     for command_str in command_pre_list:
