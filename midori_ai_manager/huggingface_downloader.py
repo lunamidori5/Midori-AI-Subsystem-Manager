@@ -1,6 +1,8 @@
-import time
+
 import argparse
 import requests
+
+from tqdm import tqdm
 
 def download_file_from_midori_ai(url, filename, username, reponame, modeltype):
     """
@@ -13,21 +15,31 @@ def download_file_from_midori_ai(url, filename, username, reponame, modeltype):
     reponame: The name of the Hugging Face repository to download the model from.
     modeltype: The name of the model to download.
     """
+
+    chunk_size = 1024 * 1024 * 2
+    
     headers = {
         'username': username,
         'reponame': reponame,
         'modeltype': modeltype
     }
+    
+    try:
+        response = requests.get(url, headers=headers, allow_redirects=True, stream=True, timeout=55)
+        response.raise_for_status()
 
-    for i in range(15):
-        try:
-            r = requests.get(url, headers=headers, allow_redirects=True)
-            open(filename, 'wb').write(r.content)
-            return
-        except:
-            print(f"Retrying download in 2 seconds... Attempt {i + 1}/15")
-            time.sleep(2)
-    raise Exception("Failed to download file after 15 retries.")
+        total_size = int(response.headers.get("Content-Length", 0))
+        
+        with open(filename, 'wb') as f, tqdm(total=total_size, unit='B', unit_scale=True, desc=f'Downloading Model') as pbar:
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    f.write(chunk)
+                    pbar.update(len(chunk))
+
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(f"Download failed: {e}")
+    except Exception as e:
+        raise RuntimeError(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
