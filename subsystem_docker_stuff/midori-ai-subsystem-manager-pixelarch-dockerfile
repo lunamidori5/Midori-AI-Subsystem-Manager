@@ -11,6 +11,8 @@ WORKDIR /home/$USERNAME
 
 RUN sudo sed -i 's/Topaz/Subsystem Manager/g' /etc/os-release
 
+RUN sudo usermod -aG docker $USERNAME
+
 RUN yay -Syu --noconfirm uv && yay -Yccc --noconfirm
 
 RUN git clone https://github.com/lunamidori5/subsystem-manager.git
