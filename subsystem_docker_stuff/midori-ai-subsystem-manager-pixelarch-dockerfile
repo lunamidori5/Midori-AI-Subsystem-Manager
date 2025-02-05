@@ -4,14 +4,17 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONOPTIMIZE=2
 
-WORKDIR /app
+ARG USERNAME=midori-ai
+
+USER $USERNAME
+WORKDIR /home/$USERNAME
 
 RUN sudo sed -i 's/Topaz/Subsystem Manager/g' /etc/os-release
 
-RUN yay -Syu --noconfirm python310 && yay -Yccc --noconfirm
+RUN yay -Syu --noconfirm uv && yay -Yccc --noconfirm
 
-RUN touch other_os.txt
+RUN git clone https://github.com/lunamidori5/subsystem-manager.git
 
-RUN curl -k --disable --disable-eprt -s https://raw.githubusercontent.com/lunamidori5/Midori-AI-Subsystem-Manager/master/midori_ai_manager/subsystem_python_env_setup.py > subsystem_setup.py && python subsystem_setup.py && sudo mv dist/model_installer /usr/bin/subsystem_manager && sudo chmod +x /usr/bin/subsystem_manager && rm -rf dist temp build model_installer.spec build_log.txt log.txt other_os.txt subsystem_setup.py
+WORKDIR /home/$USERNAME/subsystem-manager/
 
-CMD ["sleep", "infinity"]
+CMD ["uv", "run", "main.py"]
