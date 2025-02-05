@@ -1,5 +1,0 @@
-FROM ubuntu:rolling
-
-RUN echo "This docker is now deprecated... switch to PixelArch"
-
-CMD echo "This docker is now deprecated... switch to PixelArch"
