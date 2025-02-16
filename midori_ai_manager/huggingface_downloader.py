@@ -4,17 +4,18 @@ import requests
 
 from tqdm import tqdm
 
-def download_file_from_midori_ai(url, filename, username, reponame, modeltype):
+def download_file_from_midori_ai(filename, username, reponame, modeltype):
     """
     Download the file from the given URL to the given file 
 
     Args:
-    url: The URL of the file to download.
     filename: The name of the file to save the downloaded file to.
     username: The username for the Hugging Face account.
     reponame: The name of the Hugging Face repository to download the model from.
     modeltype: The name of the model to download.
     """
+    
+    url = f"https://tea-cup.midori-ai.xyz/huggingface/model/{modeltype}"
 
     chunk_size = 1024 * 1024 * 2
     
@@ -52,7 +53,6 @@ if __name__ == "__main__":
     username = args.username
     reponame = args.reponame
     modeltype = args.modeltype
-    url = f"https://tea-cup.midori-ai.xyz/huggingface/model/{modeltype}"
 
     # Download the file
-    download_file_from_midori_ai(url, filename, username, reponame, modeltype)
+    download_file_from_midori_ai(filename, username, reponame, modeltype)
