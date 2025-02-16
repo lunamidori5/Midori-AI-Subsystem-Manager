@@ -38,9 +38,9 @@ def download_file_from_midori_ai(filename, username, reponame, modeltype):
                     pbar.update(len(chunk))
 
     except requests.exceptions.RequestException as e:
-        raise RuntimeError(f"Download failed: {e}")
+        raise RuntimeError(f"Download failed: {str(e)}")
     except Exception as e:
-        raise RuntimeError(f"An error occurred: {e}")
+        raise RuntimeError(f"An error occurred: {str(e)}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
