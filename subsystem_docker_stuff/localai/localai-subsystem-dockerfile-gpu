@@ -1,4 +1,4 @@
-FROM quay.io/go-skynet/local-ai:master-cublas-cuda11
+FROM quay.io/go-skynet/local-ai:master-cublas-cuda11-extras
 
 RUN echo "Placeholder: USER root"
 
